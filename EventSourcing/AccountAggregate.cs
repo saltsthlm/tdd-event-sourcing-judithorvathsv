@@ -8,7 +8,8 @@ public class AccountAggregate
 {
 
   public string? AccountId { get; set; }
-  public decimal Balance { get; set; }
+  public decimal Balance { get; set; }  
+  public decimal MaxBalance { get; set; }
   public CurrencyType Currency { get; set; }
   public string? CustomerId { get; set; }
   public AccountStatus Status { get; set; }
@@ -42,10 +43,13 @@ public class AccountAggregate
       case DepositEvent deposit:
         Apply(deposit);
         break;
+      case WithdrawalEvent wihdrawal:
+        Apply(wihdrawal);
+        break;
       default:
         throw new EventTypeNotSupportedException("162 ERROR_EVENT_NOT_SUPPORTED");
     }
-  } 
+  }
 
   private void Apply(AccountCreatedEvent accountCreated)
   {
@@ -53,16 +57,33 @@ public class AccountAggregate
     Balance = accountCreated.InitialBalance;
     Currency = accountCreated.Currency;
     CustomerId = accountCreated.CustomerId;
+    MaxBalance = accountCreated.MaxBalance;
   }
+
+
 
   private void Apply(DepositEvent deposit)
   {
     Balance += deposit.Amount;
+
+    if (deposit.Amount>MaxBalance)
+    {
+     throw new Exception("128*");
+    }  
+
+    //throw new Exception("128*");
   }
 
   private void Apply(WithdrawalEvent wihdrawal)
   {
-    throw new NotImplementedException();
+    if(Balance == 0){
+       throw new Exception("128*");
+    }
+    Balance -= wihdrawal.amount;
+
+    if(Balance<0){
+       throw new Exception("285*");  
+    }
   }
 
   private void Apply(DeactivationEvent deactivation)
