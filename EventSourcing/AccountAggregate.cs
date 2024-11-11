@@ -46,6 +46,9 @@ public class AccountAggregate
       case WithdrawalEvent wihdrawal:
         Apply(wihdrawal);
         break;
+        case DeactivationEvent deactivation:
+        Apply(deactivation);
+        break;
       default:
         throw new EventTypeNotSupportedException("162 ERROR_EVENT_NOT_SUPPORTED");
     }
@@ -69,9 +72,7 @@ public class AccountAggregate
     if (deposit.Amount>MaxBalance)
     {
      throw new Exception("128*");
-    }  
-
-    //throw new Exception("128*");
+    }     
   }
 
   private void Apply(WithdrawalEvent wihdrawal)
@@ -88,7 +89,7 @@ public class AccountAggregate
 
   private void Apply(DeactivationEvent deactivation)
   {
-    throw new NotImplementedException();
+     Status = AccountStatus.Disabled;
   }
 
   private void Apply(ActivationEvent activation)
