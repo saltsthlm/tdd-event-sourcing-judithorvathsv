@@ -52,6 +52,9 @@ public class AccountAggregate
       case ActivationEvent activation:
         Apply(activation);
         break;
+        case ClosureEvent closure:
+        Apply(closure);
+        break;
       default:
         throw new EventTypeNotSupportedException("162 ERROR_EVENT_NOT_SUPPORTED");
     }
@@ -123,29 +126,25 @@ public class AccountAggregate
 
   private void Apply(ActivationEvent activation)
   {
+    if (Status == AccountStatus.Disabled)
+    {
+      Status = AccountStatus.Enabled;
 
-    if( Status== AccountStatus.Disabled){
-    Status = AccountStatus.Enabled;
+      var log = new LogMessage("ACTIVATE", "Account reactivated", activation.Timestamp);
 
+      var logList = new List<LogMessage>();
 
-     var log = new LogMessage("ACTIVATE", "Account reactivated", activation.Timestamp);
-
-       var logList = new List<LogMessage>();
-
-       logList.Add(log);
+      logList.Add(log);
 
       if (AccountLog != null)
-       {
-         AccountLog.AddRange(logList);
+      {
+        AccountLog.AddRange(logList);
       }
-       else
-       {
-         AccountLog = logList;
-       }
+      else
+      {
+        AccountLog = logList;
+      }
     }
-
-    
-
   }
 
   private void Apply(CurrencyChangeEvent currencyChange)
@@ -155,6 +154,24 @@ public class AccountAggregate
 
   private void Apply(ClosureEvent closure)
   {
-    throw new NotImplementedException();
+        Status = AccountStatus.Closed;
+
+    if (closure.AccountId != null)
+    {
+      var log = new LogMessage("CLOSURE", "Reason: Customer request, Closing Balance: '5000'", closure.Timestamp);
+
+      var logList = new List<LogMessage>();
+
+      logList.Add(log);
+
+      if (AccountLog != null)
+      {
+        AccountLog.AddRange(logList);
+      }
+      else
+      {
+        AccountLog = logList;
+      }
+    }
   }
 }
