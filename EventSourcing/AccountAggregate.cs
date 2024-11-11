@@ -73,36 +73,55 @@ public class AccountAggregate
 
   private void Apply(DepositEvent deposit)
   {
+    if (Status == AccountStatus.Closed)
+    {
+      throw new Exception("502*");
+    }
 
-  if(Status == AccountStatus.Disabled){
-           throw new Exception("344*");  
-  }
+    if (Status == AccountStatus.Disabled)
+    {
+      throw new Exception("344*");
+    }
 
     Balance += deposit.Amount;
 
     if (deposit.Amount > MaxBalance)
     {
-     throw new Exception("281*");
-    }     
+      throw new Exception("281*");
+    }
   }
 
   private void Apply(WithdrawalEvent wihdrawal)
-  {if(Status == AccountStatus.Disabled){
-           throw new Exception("344*");  
-  }
+  {
+    if (Status == AccountStatus.Closed)
+    {
+      throw new Exception("502*");
+    }
 
-    if(Balance == 0){
-       throw new Exception("128*");
+    if (Status == AccountStatus.Disabled)
+    {
+      throw new Exception("344*");
+    }
+
+    if (Balance == 0)
+    {
+      throw new Exception("128*");
     }
     Balance -= wihdrawal.amount;
 
-    if(Balance<0){
-       throw new Exception("285*");  
+    if (Balance < 0)
+    {
+      throw new Exception("285*");
     }
   }
 
   private void Apply(DeactivationEvent deactivation)
   {
+    if (Status == AccountStatus.Closed)
+    {
+      throw new Exception("502*");
+    }
+
     Status = AccountStatus.Disabled;
 
     if (deactivation.AccountId != null)
