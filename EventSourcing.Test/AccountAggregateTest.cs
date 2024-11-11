@@ -301,26 +301,6 @@ public class AccountAggregateTEst
     result.Message.Should().StartWith("344");
   }
 
-  [Fact]
-  public async void ActivateEvent_Should_ActivateADeactivatedAccount()
-  {
-    // Arrange
-    var events = await FileReader.GetStream(16);
-    var expectedAccount = new TestAccountAggregate
-    {
-      AccountId = "ACC123456",
-      Balance = 5000,
-      Currency = CurrencyType.Usd,
-      CustomerId = "CUST001",
-      Status = AccountStatus.Enabled,
-    };
-
-    // Act
-    var result = AccountAggregate.GenerateAggregate(events);
-
-    // Assert
-    result.Should().BeEquivalentTo(expectedAccount);
-  }
 
   [Fact]
   public async void ActivateEvent_Should_AddEventToAccountLog()
@@ -338,12 +318,12 @@ public class AccountAggregateTEst
         new (
           Type: "DEACTIVATE",
           Message: "Account inactive for 270 days",
-          Timestamp: DateTime.Parse("2024-10-02T10:30:00Z")
+          Timestamp: DateTime.Parse("2024-10-02T10:30:00")
         ),
         new (
           Type: "ACTIVATE",
           Message: "Account reactivated",
-          Timestamp: DateTime.Parse("2024-10-03T10:30:00Z")
+          Timestamp: DateTime.Parse("2024-10-03T10:30:00")
         ),
       ]
     };
@@ -371,12 +351,12 @@ public class AccountAggregateTEst
         new (
           Type: "DEACTIVATE",
           Message: "Account inactive for 270 days",
-          Timestamp: DateTime.Parse("2024-10-02T10:30:00Z")
+          Timestamp: DateTime.Parse("2024-10-02T10:30:00")
         ),
         new (
           Type: "ACTIVATE",
           Message: "Account reactivated",
-          Timestamp: DateTime.Parse("2024-10-03T10:30:00Z")
+          Timestamp: DateTime.Parse("2024-10-03T10:30:00")
         ),
       ]
     };

@@ -70,6 +70,7 @@ public class AccountAggregate
 
   private void Apply(DepositEvent deposit)
   {
+
   if(Status == AccountStatus.Disabled){
            throw new Exception("344*");  
   }
@@ -122,8 +123,29 @@ public class AccountAggregate
 
   private void Apply(ActivationEvent activation)
   {
+
+    if( Status== AccountStatus.Disabled){
     Status = AccountStatus.Enabled;
-    AccountLog = null;
+
+
+     var log = new LogMessage("ACTIVATE", "Account reactivated", activation.Timestamp);
+
+       var logList = new List<LogMessage>();
+
+       logList.Add(log);
+
+      if (AccountLog != null)
+       {
+         AccountLog.AddRange(logList);
+      }
+       else
+       {
+         AccountLog = logList;
+       }
+    }
+
+    
+
   }
 
   private void Apply(CurrencyChangeEvent currencyChange)
