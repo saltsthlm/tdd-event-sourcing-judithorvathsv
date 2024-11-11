@@ -67,6 +67,10 @@ public class AccountAggregate
 
   private void Apply(DepositEvent deposit)
   {
+  if(Status == AccountStatus.Disabled){
+           throw new Exception("344*");  
+  }
+
     Balance += deposit.Amount;
 
     if (deposit.Amount > MaxBalance)
@@ -76,7 +80,10 @@ public class AccountAggregate
   }
 
   private void Apply(WithdrawalEvent wihdrawal)
-  {
+  {if(Status == AccountStatus.Disabled){
+           throw new Exception("344*");  
+  }
+
     if(Balance == 0){
        throw new Exception("128*");
     }
@@ -99,14 +106,14 @@ public class AccountAggregate
 
       logList.Add(log);
 
-      if(AccountLog != null){
-AccountLog.AddRange(logList);
+      if (AccountLog != null)
+      {
+        AccountLog.AddRange(logList);
       }
-      else{
+      else
+      {
         AccountLog = logList;
       }
-
-      
     }
   }
 
