@@ -24,8 +24,15 @@ public class AccountAggregate
     {
       return null;
     }
-    
+
+
     var account = new AccountAggregate();
+
+    if (account.CustomerId == null)
+    {
+      throw new Exception("511*");
+    }
+
     foreach (var accountEvent in events)
     {
       account.Apply(accountEvent);
