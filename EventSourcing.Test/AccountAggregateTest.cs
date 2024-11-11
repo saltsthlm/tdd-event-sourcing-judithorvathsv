@@ -422,14 +422,14 @@ public class AccountAggregateTEst
       Balance = 51000,
       Currency = CurrencyType.Sek,
       CustomerId = "CUST001",
-      Status = AccountStatus.Disabled,
+      Status = AccountStatus.Disabled,  
     };
 
     // Act
     var result = AccountAggregate.GenerateAggregate(events);
 
     // Assert
-    result.Should().Be(expectedAccount);
+    result.Should().BeEquivalentTo(expectedAccount);
   }
 
   [Fact]
@@ -448,7 +448,7 @@ public class AccountAggregateTEst
         new (
           Type: "CURRENCY-CHANGE",
           Message: "Change currency from 'USD' to 'SEK'",
-          Timestamp: DateTime.Parse("2024-10-02T10:30:00Z")
+          Timestamp: DateTime.Parse("2024-10-02T10:30:00")
         ),
       ]
     };

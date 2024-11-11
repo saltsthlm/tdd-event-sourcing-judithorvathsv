@@ -14,6 +14,7 @@ public class AccountAggregate
   public string? CustomerId { get; set; }
   public AccountStatus Status { get; set; }
   public List<LogMessage>? AccountLog { get; set; }
+  public CurrencyType NewCurrency {get; set;}
 
   private AccountAggregate(){}
 
@@ -52,8 +53,11 @@ public class AccountAggregate
       case ActivationEvent activation:
         Apply(activation);
         break;
-        case ClosureEvent closure:
+      case ClosureEvent closure:
         Apply(closure);
+        break;
+      case CurrencyChangeEvent currencyChange:
+        Apply(currencyChange);
         break;
       default:
         throw new EventTypeNotSupportedException("162 ERROR_EVENT_NOT_SUPPORTED");
@@ -167,8 +171,26 @@ public class AccountAggregate
   }
 
   private void Apply(CurrencyChangeEvent currencyChange)
-  {
-    throw new NotImplementedException();
+  { 
+    var oldCurrency = Currency;   
+    Currency = currencyChange.NewCurrency;
+    Balance = currencyChange.NewBalance;
+    Status = AccountStatus.Disabled;
+
+      var log = new LogMessage("CURRENCY-CHANGE", $"Change currency from '{oldCurrency.ToString().ToUpper()}' to '{currencyChange.NewCurrency.ToString().ToUpper()}'", currencyChange.Timestamp);
+
+      var logList = new List<LogMessage>();
+
+      logList.Add(log);
+
+      if (AccountLog != null)
+      {
+        AccountLog.AddRange(logList);
+      }
+      else
+      {
+        AccountLog = logList;
+      }
   }
 
   private void Apply(ClosureEvent closure)
