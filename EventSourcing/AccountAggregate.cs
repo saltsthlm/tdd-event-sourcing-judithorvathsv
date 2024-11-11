@@ -99,10 +99,14 @@ public class AccountAggregate
 
       logList.Add(log);
 
-      if (logList.Count > 1)
-      {
+      if(AccountLog != null){
+AccountLog.AddRange(logList);
+      }
+      else{
         AccountLog = logList;
       }
+
+      
     }
   }
 
