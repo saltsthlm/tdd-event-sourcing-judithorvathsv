@@ -69,9 +69,9 @@ public class AccountAggregate
   {
     Balance += deposit.Amount;
 
-    if (deposit.Amount>MaxBalance)
+    if (deposit.Amount > MaxBalance)
     {
-     throw new Exception("128*");
+     throw new Exception("281*");
     }     
   }
 
@@ -90,17 +90,20 @@ public class AccountAggregate
   private void Apply(DeactivationEvent deactivation)
   {
     Status = AccountStatus.Disabled;
+
     if (deactivation.AccountId != null)
     {
-      AccountLog = [
-          new (
-          Type: "DEACTIVATE",
-          Message: deactivation.Reason.ToString(),
-          Timestamp: deactivation.Timestamp
-        ),
-      ];
-    }
+      var log = new LogMessage("DEACTIVATE", deactivation.Reason.ToString(), deactivation.Timestamp);
 
+      var logList = new List<LogMessage>();
+
+      logList.Add(log);
+
+      if (logList.Count > 1)
+      {
+        AccountLog = logList;
+      }
+    }
   }
 
   private void Apply(ActivationEvent activation)
