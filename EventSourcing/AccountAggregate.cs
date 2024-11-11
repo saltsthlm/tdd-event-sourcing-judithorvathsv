@@ -25,7 +25,6 @@ public class AccountAggregate
       return null;
     }
 
-
     var account = new AccountAggregate();
 
     if (account.CustomerId == null)
@@ -35,6 +34,10 @@ public class AccountAggregate
 
     foreach (var accountEvent in events)
     {
+      if (accountEvent == null)
+      {
+        throw new Exception("511*");
+      }
       account.Apply(accountEvent);
     }
 
@@ -84,6 +87,10 @@ public class AccountAggregate
 
   private void Apply(DepositEvent deposit)
   {
+    if(AccountId == null)
+    {
+        throw new Exception("128*");
+    }
     if (Status == AccountStatus.Closed)
     {
       throw new Exception("502*");
