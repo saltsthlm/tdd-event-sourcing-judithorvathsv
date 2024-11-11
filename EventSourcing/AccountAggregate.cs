@@ -46,7 +46,7 @@ public class AccountAggregate
       case WithdrawalEvent wihdrawal:
         Apply(wihdrawal);
         break;
-        case DeactivationEvent deactivation:
+      case DeactivationEvent deactivation:
         Apply(deactivation);
         break;
       default:
@@ -89,7 +89,18 @@ public class AccountAggregate
 
   private void Apply(DeactivationEvent deactivation)
   {
-     Status = AccountStatus.Disabled;
+    Status = AccountStatus.Disabled;
+    if (deactivation.AccountId != null)
+    {
+      AccountLog = [
+          new (
+          Type: "DEACTIVATE",
+          Message: deactivation.Reason.ToString(),
+          Timestamp: deactivation.Timestamp
+        ),
+      ];
+    }
+
   }
 
   private void Apply(ActivationEvent activation)
